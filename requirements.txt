@@ -1,0 +1,7 @@
+jupyterlab
+scipy
+pyemittance
+meme
+pytz
+dateparser
+git+https://github.com/slaclab/lcls_cu_injector_ml_model.git
