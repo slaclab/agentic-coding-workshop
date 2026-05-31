@@ -1,6 +1,6 @@
 jupyterlab
 scipy
-pyemittance
+slac-measurements
 # if running meme:
 meme
 pytz
