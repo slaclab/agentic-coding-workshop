@@ -1,7 +1,3 @@
 jupyterlab
 scipy
 pyemittance
-# if running meme:
-meme
-pytz
-dateparser
