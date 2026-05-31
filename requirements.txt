@@ -1,7 +1,3 @@
 jupyterlab
 scipy
-slac-measurements
-# if running meme:
-meme
-pytz
-dateparser
+git+https://github.com/slaclab/slac-measurements.git

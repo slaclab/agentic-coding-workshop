@@ -32,7 +32,6 @@ design lattice at the observation point. BMAG = 1 means perfect match.
 | `slac-measurements` | Emittance calculation backend | **Active** (github.com/slaclab/slac-measurements) | Replaces pyemittance |
 | `pyemittance` | Previous emittance backend | **Unmaintained** | Removed from this repo; do not reintroduce |
 | `scipy` | .mat file I/O, optimization | Stable | Used by both this code and slac-measurements internals |
-| `meme` | Accelerator model queries (BMAD R-matrices) | SLAC-internal | Optional; only needed to fetch live/archived lattice data |
 
 ---
 
@@ -58,9 +57,12 @@ design lattice at the observation point. BMAG = 1 means perfect match.
 ```
 matlab_scans/
   Emittance-scan-OTRS_IN20_571-YYYY-MM-DD-HHMMSS.mat   (49 files)
-    └─ data.beam[step, method].stats / statsStd   — measured beam sizes
+    └─ data.beam                — structured array shape (n_steps, 7_methods)
+         .beam[step, method]['stats']    — numeric (1, 6): [..., [2]=xrms(μm), [3]=yrms(μm), ...]
+         .beam[step, method]['statsStd'] — same layout, uncertainties
     └─ data.quadVal                               — BDES setpoints [kG]
     └─ data.twiss / twissstd                      — MATLAB fitted Twiss (shape 4×2×7 flattened)
+         Emittance values are stored in m·rad (×1e6 → mm·mrad)
     └─ data.twiss0                                — initial Twiss used by MATLAB fitter
     └─ data.rMatrix[step]                         — per-step 6×6 R-matrices from physics model
 
@@ -104,7 +106,7 @@ flat_index = quantity × 14 + plane × 7 + method
 | x | 0 |
 | y | 1 |
 
-The codebase currently extracts **method 5** (`method_idx = 5` in `comparison.py`).
+The codebase currently extracts **method 0** (Gaussian) in both `loaders.py` and `comparison.py`.
 
 ---
 
@@ -168,8 +170,6 @@ if result:
 ---
 
 ## Items to note
-
-> **[UNCERTAIN]** items I could not confirm from the code alone:
 
 1. **Note on beam size methods** (1-indexed in MATLAB): 1=Gaussian, 2=Asymmetric Gaussian, 3=Super Gaussian, 4=RMS raw, 5=RMS cut peak, 6=RMS cut area, 7=RMS floor The code now uses method 0 for simplicty. Typically, operators plot method 2 or 5.
 

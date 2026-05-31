@@ -34,7 +34,7 @@ def extract_matlab_results(twiss: np.ndarray, twissstd: np.ndarray) -> MatlabRes
     The twiss array has logical shape (4 quantities × 2 planes × 7 methods),
     flattened to length 56. We extract method-0 results at known indices.
     """
-    method_idx = 5
+    method_idx = 0
     return MatlabResults(
         emitx=twiss[0+method_idx],
         emitx_err=twissstd[0+method_idx],
