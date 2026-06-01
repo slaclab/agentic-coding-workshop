@@ -1,6 +1,10 @@
+import logging
+
 import numpy as np
 from slac_measurements.emittance import normalize_emittance
 from slac_measurements.emittance_measurement import compute_emit_bmag_quad_scan_machine_units
+
+logger = logging.getLogger(__name__)
 
 ELECTRON_MASS_EV = 0.511e6
 
@@ -66,7 +70,8 @@ def compute_emittance(
             energy=info["energy"],
             twiss_design=twiss_design,
         )
-    except Exception:
+    except Exception as exc:
+        logger.warning("Emittance fit failed: %s", exc)
         return None
 
     # results["emittance"] is geometric emittance in mm-mrad
@@ -76,7 +81,6 @@ def compute_emittance(
     if geom_emit_x <= 0 or geom_emit_y <= 0:
         return None
 
-    gamma = info["energy"] / ELECTRON_MASS_EV
     norm_emit_x = normalize_emittance(geom_emit_x, info["energy"]*1e-9)
     norm_emit_y = normalize_emittance(geom_emit_y, info["energy"]*1e-9)
 

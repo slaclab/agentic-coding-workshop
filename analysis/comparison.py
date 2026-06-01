@@ -28,22 +28,31 @@ class MatlabResults:
     bmagy_err: float
 
 
+_N_METHODS = 7
+_EMIT, _ALPHA, _BETA, _BMAG = 0, 1, 2, 3
+_X, _Y = 0, 1
+
+
+def _twiss_index(quantity: int, plane: int, method: int = 0) -> int:
+    """Compute flat index into the (4 quantities × 2 planes × 7 methods) twiss array."""
+    return quantity * 2 * _N_METHODS + plane * _N_METHODS + method
+
+
 def extract_matlab_results(twiss: np.ndarray, twissstd: np.ndarray) -> MatlabResults:
     """Extract MATLAB emittance/bmag values from the flattened twiss arrays.
 
     The twiss array has logical shape (4 quantities × 2 planes × 7 methods),
     flattened to length 56. We extract method-0 results at known indices.
     """
-    method_idx = 0
     return MatlabResults(
-        emitx=twiss[0+method_idx],
-        emitx_err=twissstd[0+method_idx],
-        emity=twiss[7+method_idx],
-        emity_err=twissstd[7+method_idx],
-        bmagx=twiss[42+method_idx],
-        bmagx_err=twissstd[42+method_idx],
-        bmagy=twiss[49+method_idx],
-        bmagy_err=twissstd[49+method_idx],
+        emitx=twiss[_twiss_index(_EMIT, _X)],
+        emitx_err=twissstd[_twiss_index(_EMIT, _X)],
+        emity=twiss[_twiss_index(_EMIT, _Y)],
+        emity_err=twissstd[_twiss_index(_EMIT, _Y)],
+        bmagx=twiss[_twiss_index(_BMAG, _X)],
+        bmagx_err=twissstd[_twiss_index(_BMAG, _X)],
+        bmagy=twiss[_twiss_index(_BMAG, _Y)],
+        bmagy_err=twissstd[_twiss_index(_BMAG, _Y)],
     )
 
 
